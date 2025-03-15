@@ -1,0 +1,10 @@
+# Markdown static site generator action
+
+Converts repository of markdown files to a static web page that can be published to Github Pages.
+
+- Glob include filter
+- Static search
+- Example of including action
+
+## Locally
+`npx @github/local-action run . src/main.js .env`

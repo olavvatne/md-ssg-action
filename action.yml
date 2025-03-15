@@ -1,0 +1,14 @@
+name: "MD-SSG"
+description: "Convert Obsidian markdown files into a static site for GitHub Pages"
+inputs:
+  markdown-location:
+    description: "Path to the Obsidian vault root (relative to repo root)"
+    required: false
+    default: "."
+  site-location:
+    description: "Output directory for the generated site"
+    required: false
+    default: "_site"
+runs:
+  using: node24
+  main: dist/index.js
