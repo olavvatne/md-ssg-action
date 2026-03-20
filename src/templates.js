@@ -1,3 +1,6 @@
+import { access, readFile } from "node:fs/promises";
+import path from "node:path";
+
 function normalizeBasePath(basePath) {
   if (!basePath) {
     return "";
@@ -33,6 +36,15 @@ function groupPagesByFolder(pages) {
   return groups;
 }
 
+async function fileExists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function renderPageList(pages) {
   if (pages.length === 0) {
     return "<p>No pages published.</p>";
@@ -43,6 +55,36 @@ function renderPageList(pages) {
     .join("\n");
 
   return `<ul>\n${listItems}\n    </ul>`;
+}
+
+function renderIndexSections(pages) {
+  const grouped = groupPagesByFolder(pages);
+  const sections = [];
+
+  if (grouped.size === 0) {
+    sections.push(
+      "    <section>\n      <h2>Pages</h2>\n      <p>No pages published.</p>\n    </section>",
+    );
+  } else {
+    for (const [folder, folderPages] of grouped.entries()) {
+      const sectionTitle = folder || "Pages";
+      sections.push(
+        `    <section>\n      <h2>${escapeHtml(sectionTitle)}</h2>\n      ${renderPageList(folderPages)}\n    </section>`,
+      );
+    }
+  }
+
+  return sections.join("\n");
+}
+
+function applyTemplate(template, replacements) {
+  let output = template;
+
+  for (const [key, value] of Object.entries(replacements)) {
+    output = output.replaceAll(`{{${key}}}`, String(value));
+  }
+
+  return output;
 }
 
 export function renderPage(data) {
@@ -73,22 +115,7 @@ ${data.content}
 export function renderIndex(data) {
   const basePath = normalizeBasePath(data.basePath);
   const stylesheetHref = `${basePath}/style.css`;
-  const grouped = groupPagesByFolder(data.pages);
-
-  const sections = [];
-
-  if (grouped.size === 0) {
-    sections.push(
-      "    <section>\n      <h2>Pages</h2>\n      <p>No pages published.</p>\n    </section>",
-    );
-  } else {
-    for (const [folder, pages] of grouped.entries()) {
-      const sectionTitle = folder || "Pages";
-      sections.push(
-        `    <section>\n      <h2>${escapeHtml(sectionTitle)}</h2>\n      ${renderPageList(pages)}\n    </section>`,
-      );
-    }
-  }
+  const sections = renderIndexSections(data.pages);
 
   return `<!doctype html>
 <html lang="en">
@@ -103,7 +130,7 @@ export function renderIndex(data) {
       <header>
         <h1>${escapeHtml(data.title)}</h1>
       </header>
-${sections.join("\n")}
+${sections}
     </main>
   </body>
 </html>
@@ -185,4 +212,44 @@ ul {
   }
 }
 `;
+}
+
+export async function resolveTemplates(vaultRoot) {
+  const templatesDir = path.join(vaultRoot, "_templates");
+  const pagePath = path.join(templatesDir, "page.html");
+  const indexPath = path.join(templatesDir, "index.html");
+  const stylePath = path.join(templatesDir, "style.css");
+
+  if (!(await fileExists(pagePath))) {
+    return {
+      renderPage,
+      renderIndex,
+      stylesheet: defaultStylesheet,
+    };
+  }
+
+  const pageTemplate = await readFile(pagePath, "utf8");
+  const customIndexTemplate = (await fileExists(indexPath))
+    ? await readFile(indexPath, "utf8")
+    : null;
+  const customStylesheet = (await fileExists(stylePath)) ? await readFile(stylePath, "utf8") : null;
+
+  return {
+    renderPage: (data) =>
+      applyTemplate(pageTemplate, {
+        content: data.content,
+        title: data.title,
+        basePath: data.basePath,
+        siteTitle: data.siteTitle,
+      }),
+    renderIndex: customIndexTemplate
+      ? (data) =>
+          applyTemplate(customIndexTemplate, {
+            title: data.title,
+            basePath: data.basePath,
+            pages: renderIndexSections(data.pages),
+          })
+      : renderIndex,
+    stylesheet: customStylesheet ? () => customStylesheet : defaultStylesheet,
+  };
 }
