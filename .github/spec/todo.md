@@ -22,62 +22,62 @@
   - [x] Glob patterns applied correctly
   - [x] Unit tests pass (`test/filter.test.js` — glob portion)
 
-- [ ] **04 — Tag Filtering**
-  - [ ] `tagFilter` in `src/filter.js` detects inline `#tag`
-  - [ ] Tags inside code blocks and inline code ignored
-  - [ ] Custom tag names supported
-  - [ ] Unit tests pass (`test/filter.test.js` — tag portion)
+- [x] **04 — Tag Filtering**
+  - [x] `tagFilter` in `src/filter.js` detects inline `#tag`
+  - [x] Tags inside code blocks and inline code ignored
+  - [x] Custom tag names supported
+  - [x] Unit tests pass (`test/filter.test.js` — tag portion)
 
-- [ ] **05 — Image/Asset Extraction**
-  - [ ] `src/assets.js` detects standard and Obsidian image syntax
-  - [ ] Path resolution: file-relative → vault-relative
-  - [ ] External URLs skipped, duplicates removed
-  - [ ] Missing images produce warnings, not errors
-  - [ ] Unit tests pass (`test/assets.test.js`)
+- [x] **05 — Image/Asset Extraction**
+  - [x] `src/assets.js` detects standard and Obsidian image syntax
+  - [x] Path resolution: file-relative → vault-relative
+  - [x] External URLs skipped, duplicates removed
+  - [x] Missing images produce warnings, not errors
+  - [x] Unit tests pass (`test/assets.test.js`)
 
-- [ ] **06 — File Staging**
-  - [ ] `src/staging.js` creates staging dir in temp
-  - [ ] Glob prefix stripping works for all pattern types
-  - [ ] Files and images copied correctly
-  - [ ] Unit tests pass (`test/staging.test.js`)
+- [x] **06 — File Staging**
+  - [x] `src/staging.js` creates staging dir in temp
+  - [x] Glob prefix stripping works for all pattern types
+  - [x] Files and images copied correctly
+  - [x] Unit tests pass (`test/staging.test.js`)
 
-- [ ] **07 — Wiki-Links Remark Plugin**
-  - [ ] `src/wikilinks.js` resolves `[[links]]` to `<a>` or `<span>`
-  - [ ] Alias syntax, case-insensitive lookup
-  - [ ] Links in code blocks untouched
-  - [ ] Node splitting handles surrounding text
-  - [ ] Unit tests pass (`test/wikilinks.test.js`)
+- [x] **07 — Wiki-Links Remark Plugin**
+  - [x] `src/wikilinks.js` resolves `[[links]]` to `<a>` or `<span>`
+  - [x] Alias syntax, case-insensitive lookup
+  - [x] Links in code blocks untouched
+  - [x] Node splitting handles surrounding text
+  - [x] Unit tests pass (`test/wikilinks.test.js`)
 
-- [ ] **08 — Render Pipeline**
-  - [ ] `src/render.js` unified processor produces correct HTML
-  - [ ] YAML frontmatter stripped
-  - [ ] Title extracted from first H1
-  - [ ] Wiki-links integrated
-  - [ ] Unit tests pass (`test/render.test.js`)
+- [x] **08 — Render Pipeline**
+  - [x] `src/render.js` unified processor produces correct HTML
+  - [x] YAML frontmatter stripped
+  - [x] Title extracted from first H1
+  - [x] Wiki-links integrated
+  - [x] Unit tests pass (`test/render.test.js`)
 
-- [ ] **09 — Built-in Templates & CSS**
-  - [ ] `src/templates.js` page layout, index page, default stylesheet
-  - [ ] Dark/light mode, responsive, `.dead-link` styling
-  - [ ] `basePath` applied to all links
-  - [ ] Unit tests pass (`test/templates.test.js`)
+- [x] **09 — Built-in Templates & CSS**
+  - [x] `src/templates.js` page layout, index page, default stylesheet
+  - [x] Dark/light mode, responsive, `.dead-link` styling
+  - [x] `basePath` applied to all links
+  - [x] Unit tests pass (`test/templates.test.js`)
 
-- [ ] **10 — Template Override System**
-  - [ ] Override detection via `_templates/page.html`
-  - [ ] `{{placeholder}}` substitution
-  - [ ] Fallback for missing optional overrides
-  - [ ] Unit tests pass
+- [x] **10 — Template Override System**
+  - [x] Override detection via `_templates/page.html`
+  - [x] `{{placeholder}}` substitution
+  - [x] Fallback for missing optional overrides
+  - [x] Unit tests pass
 
-- [ ] **11 — Build Orchestration**
-  - [ ] `src/build.js` wires rendering, templating, image copy, output
-  - [ ] Wiki-link map built from staged files
-  - [ ] Directory-style URLs (`/path/index.html`)
-  - [ ] Index page with folder grouping
-  - [ ] Render failures handled gracefully
-  - [ ] Unit tests pass (`test/build.test.js`)
+- [x] **11 — Build Orchestration**
+  - [x] `src/build.js` wires rendering, templating, image copy, output
+  - [x] Wiki-link map built from staged files
+  - [x] Directory-style URLs (`/path/index.html`)
+  - [x] Index page with folder grouping
+  - [x] Render failures handled gracefully
+  - [x] Unit tests pass (`test/build.test.js`)
 
-- [ ] **12 — Main Orchestrator & Integration Test**
-  - [ ] `src/main.js` complete pipeline wiring
-  - [ ] Integration test with mock vault
-  - [ ] Published files in output, unpublished excluded
-  - [ ] Wiki-links, images, index, stylesheet all correct
-  - [ ] `npm run build` produces working `dist/index.js`
+- [x] **12 — Main Orchestrator & Integration Test**
+  - [x] `src/main.js` complete pipeline wiring
+  - [x] Integration test with mock vault
+  - [x] Published files in output, unpublished excluded
+  - [x] Wiki-links, images, index, stylesheet all correct
+  - [x] `npm run build` produces working `dist/index.js`
