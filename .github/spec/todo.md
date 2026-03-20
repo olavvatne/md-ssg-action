@@ -2,25 +2,25 @@
 
 ## Tasks
 
-- [ ] **01 — Project Scaffolding & Dependencies**
-  - [ ] `action.yml` with inputs and `node24` runtime
-  - [ ] `index.js` entry point calling `run()`
-  - [ ] `src/main.js` stub with `run()` export
-  - [ ] `package.json` with all deps, `build` and `test` scripts
-  - [ ] `npm install` succeeds
-  - [ ] `npm run build` produces `dist/index.js`
+- [x] **01 — Project Scaffolding & Dependencies**
+  - [x] `action.yml` with inputs and `node24` runtime
+  - [x] `index.js` entry point calling `run()`
+  - [x] `src/main.js` stub with `run()` export
+  - [x] `package.json` with all deps, `build` and `test` scripts
+  - [x] `npm install` succeeds
+  - [x] `npm run build` produces `dist/index.js`
 
-- [ ] **02 — Config Parsing & Validation**
-  - [ ] `src/config.js` reads and parses `.md-ssg.yml`
-  - [ ] Validation rules enforced with descriptive errors
-  - [ ] Defaults applied for optional fields
-  - [ ] Unit tests pass (`test/config.test.js`)
+- [x] **02 — Config Parsing & Validation**
+  - [x] `src/config.js` reads and parses `.md-ssg.yml`
+  - [x] Validation rules enforced with descriptive errors
+  - [x] Defaults applied for optional fields
+  - [x] Unit tests pass (`test/config.test.js`)
 
-- [ ] **03 — Glob Filtering**
-  - [ ] `globFilter` in `src/filter.js` scans vault recursively
-  - [ ] Only `.md` files returned
-  - [ ] Glob patterns applied correctly
-  - [ ] Unit tests pass (`test/filter.test.js` — glob portion)
+- [x] **03 — Glob Filtering**
+  - [x] `globFilter` in `src/filter.js` scans vault recursively
+  - [x] Only `.md` files returned
+  - [x] Glob patterns applied correctly
+  - [x] Unit tests pass (`test/filter.test.js` — glob portion)
 
 - [ ] **04 — Tag Filtering**
   - [ ] `tagFilter` in `src/filter.js` detects inline `#tag`
