@@ -670,7 +670,9 @@ await parseConfig(vaultRoot, { github: { context: { repo: { repo: "test-repo" } 
 
 ### 9.2 Unit Tests
 
-#### `config.test.js`
+All test files live in `test/` (e.g. `test/config.test.js` for `src/config.js`). Import source modules via `"../src/module.js"`.
+
+#### `test/config.test.js`
 | Test case | Input | Expected |
 |---|---|---|
 | Valid minimal config | `include: ["**"]` | Returns config with defaults |
@@ -683,7 +685,7 @@ await parseConfig(vaultRoot, { github: { context: { repo: { repo: "test-repo" } 
 | Empty file | `""` | Throws with missing include error |
 | Missing file | Non-existent path | Throws with file not found |
 
-#### `filter.test.js`
+#### `test/filter.test.js`
 | Test case | Expected |
 |---|---|
 | Files inside glob pattern | Included |
@@ -699,7 +701,7 @@ await parseConfig(vaultRoot, { github: { context: { repo: { repo: "test-repo" } 
 | Custom tag name | Matches `#<custom>` |
 | File with tag but outside glob | Rejected (AND logic) |
 
-#### `wikilinks.test.js`
+#### `test/wikilinks.test.js`
 | Test case | Input | Expected |
 |---|---|---|
 | Published link | `[[Pasta]]` | `<a href="/base/Italian/Pasta/">Pasta</a>` |
@@ -712,7 +714,7 @@ await parseConfig(vaultRoot, { github: { context: { repo: { repo: "test-repo" } 
 | Empty brackets | `[[]]` | Untouched |
 | Link with spaces | `[[My Pasta Recipe]]` | Resolved if published |
 
-#### `assets.test.js`
+#### `test/assets.test.js`
 | Test case | Input | Expected |
 |---|---|---|
 | Standard image | `![alt](img.png)` | `img.png` extracted |
@@ -723,7 +725,7 @@ await parseConfig(vaultRoot, { github: { context: { repo: { repo: "test-repo" } 
 | Duplicate references | Same image in two files | Deduplicated |
 | Missing image file | Path doesn't exist | Warning logged, skipped |
 
-#### `render.test.js`
+#### `test/render.test.js`
 | Test case | Expected |
 |---|---|
 | Basic markdown | Correct HTML output |
@@ -732,7 +734,7 @@ await parseConfig(vaultRoot, { github: { context: { repo: { repo: "test-repo" } 
 | No H1 in file | Title is `null` |
 | Wiki-links processed | Links/spans in output |
 
-#### `templates.test.js`
+#### `test/templates.test.js`
 | Test case | Expected |
 |---|---|
 | `renderPage` output | Valid HTML with title, content, nav |
@@ -785,7 +787,7 @@ vault/
 {
   "scripts": {
     "build": "ncc build index.js -o dist",
-    "test": "node --test"
+    "test": "node --test 'test/**/*.test.js'"
   }
 }
 ```

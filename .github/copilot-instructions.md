@@ -39,9 +39,13 @@ src/
   render.js           # renderMarkdown()
   templates.js        # built-in + override templates
   build.js            # buildSite() — orchestrates output
+test/
+  config.test.js      # Tests for src/config.js
+  filter.test.js      # Tests for src/filter.js
+  fixtures/           # Filesystem fixtures for integration tests
 ```
 
-New source files go in `src/`. Do not add top-level source files.
+New source files go in `src/`. Test files go in `test/`. Do not add top-level source files.
 
 ## GitHub Actions Conventions
 
@@ -53,9 +57,10 @@ New source files go in `src/`. Do not add top-level source files.
 ## Testing
 
 - Test runner: Node built-in (`node --test`)
-- Test files live alongside source: `src/__tests__/` or `src/*.test.js`.
+- Test files live in `test/`: `test/*.test.js` (e.g. `test/config.test.js` for `src/config.js`).
+- Fixtures for integration tests live in `test/fixtures/`.
 - Each task file in `.github/spec/` lists exact test cases — use those as the baseline.
-- Prefer real filesystem fixtures in a `test/` directory over mocks for integration tests.
+- Import source modules via relative path: `import { fn } from "../src/module.js"`.
 
 ## Key Design Decisions (Do Not Change)
 
