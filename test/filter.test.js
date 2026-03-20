@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { globFilter } from "../src/filter.js";
+import { globFilter, tagFilter } from "../src/filter.js";
 
 async function withVault(setup, fn) {
   const vaultRoot = await mkdtemp(path.join(os.tmpdir(), "md-ssg-filter-"));
@@ -95,6 +95,117 @@ test("globFilter returns empty results for empty directory", async () => {
       const { files, patternMap } = await globFilter(vaultRoot, ["**"]);
       assert.deepEqual(files, []);
       assert.equal(patternMap.size, 0);
+    },
+  );
+});
+
+test("tagFilter passes file with #publish in body text", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await writeFile(path.join(vaultRoot, "body.md"), "hello #publish world\n", "utf8");
+      await writeFile(path.join(vaultRoot, "other.md"), "hello world\n", "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["body.md", "other.md"], "publish");
+      assert.deepEqual(files, ["body.md"]);
+    },
+  );
+});
+
+test("tagFilter passes file with #publish at start of line", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await writeFile(path.join(vaultRoot, "start.md"), "#publish\ncontent\n", "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["start.md"], "publish");
+      assert.deepEqual(files, ["start.md"]);
+    },
+  );
+});
+
+test("tagFilter rejects file without #publish", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await writeFile(path.join(vaultRoot, "no-tag.md"), "no tag here\n", "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["no-tag.md"], "publish");
+      assert.deepEqual(files, []);
+    },
+  );
+});
+
+test("tagFilter rejects #publish inside fenced code blocks", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      const content = "```md\n#publish\n```\n";
+      await writeFile(path.join(vaultRoot, "fenced.md"), content, "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["fenced.md"], "publish");
+      assert.deepEqual(files, []);
+    },
+  );
+});
+
+test("tagFilter rejects #publish inside inline code", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await writeFile(path.join(vaultRoot, "inline.md"), "Use `#publish` here\n", "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["inline.md"], "publish");
+      assert.deepEqual(files, []);
+    },
+  );
+});
+
+test("tagFilter passes #publish inside a heading", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await writeFile(path.join(vaultRoot, "heading.md"), "## #publish\n", "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["heading.md"], "publish");
+      assert.deepEqual(files, ["heading.md"]);
+    },
+  );
+});
+
+test("tagFilter supports custom tag names", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await writeFile(path.join(vaultRoot, "custom.md"), "#release-now\n", "utf8");
+      await writeFile(path.join(vaultRoot, "publish.md"), "#publish\n", "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["custom.md", "publish.md"], "release-now");
+      assert.deepEqual(files, ["custom.md"]);
+    },
+  );
+});
+
+test("tagFilter rejects #publish as part of another word", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await writeFile(path.join(vaultRoot, "word.md"), "something#publish should fail\n", "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["word.md"], "publish");
+      assert.deepEqual(files, []);
+    },
+  );
+});
+
+test("tagFilter rejects empty files", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await writeFile(path.join(vaultRoot, "empty.md"), "", "utf8");
+    },
+    async (vaultRoot) => {
+      const files = await tagFilter(vaultRoot, ["empty.md"], "publish");
+      assert.deepEqual(files, []);
     },
   );
 });
