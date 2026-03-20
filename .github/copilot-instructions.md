@@ -13,7 +13,7 @@ GitHub Action (`action.yml`, Node 24 runtime) that converts a repository of Mark
 
 All design decisions, module APIs, edge cases, and test cases are defined in `.github/spec/`:
 
-- [spec.md](.github/spec/spec.md) — full architecture and behaviour spec
+- [spec.md](./spec/spec.md) — full architecture and behaviour spec
 - Task files (`01-*.md` through `12-*.md`) — implementation tasks with exact function signatures, file paths, and unit test expectations
 
 **Always read the relevant task file before implementing a module.** Do not invent APIs or deviate from the spec unless the user explicitly asks.
