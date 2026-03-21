@@ -235,20 +235,26 @@ export async function resolveTemplates(vaultRoot) {
   const customStylesheet = (await fileExists(stylePath)) ? await readFile(stylePath, "utf8") : null;
 
   return {
-    renderPage: (data) =>
-      applyTemplate(pageTemplate, {
+    renderPage: (data) => {
+      const basePath = normalizeBasePath(data.basePath);
+
+      return applyTemplate(pageTemplate, {
         content: data.content,
         title: data.title,
-        basePath: data.basePath,
+        basePath,
         siteTitle: data.siteTitle,
-      }),
+      });
+    },
     renderIndex: customIndexTemplate
-      ? (data) =>
-          applyTemplate(customIndexTemplate, {
+      ? (data) => {
+          const basePath = normalizeBasePath(data.basePath);
+
+          return applyTemplate(customIndexTemplate, {
             title: data.title,
-            basePath: data.basePath,
+            basePath,
             pages: renderIndexSections(data.pages),
-          })
+          });
+        }
       : renderIndex,
     stylesheet: customStylesheet ? () => customStylesheet : defaultStylesheet,
   };

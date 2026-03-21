@@ -164,6 +164,41 @@ test("resolveTemplates replaces page placeholders", async () => {
   );
 });
 
+test("resolveTemplates normalizes basePath in custom templates", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await mkdir(path.join(vaultRoot, "_templates"), { recursive: true });
+      await writeFile(
+        path.join(vaultRoot, "_templates", "page.html"),
+        "{{basePath}}|{{content}}",
+        "utf8",
+      );
+      await writeFile(
+        path.join(vaultRoot, "_templates", "index.html"),
+        "{{basePath}}|{{pages}}",
+        "utf8",
+      );
+    },
+    async (vaultRoot) => {
+      const templates = await resolveTemplates(vaultRoot);
+      const pageHtml = templates.renderPage({
+        title: "Page",
+        content: "<p>Body</p>",
+        basePath: "/docs/",
+        siteTitle: "Site",
+      });
+      const indexHtml = templates.renderIndex({
+        title: "Docs",
+        basePath: "/docs/",
+        pages: [{ title: "One", url: "/docs/one/", folder: "" }],
+      });
+
+      assert.equal(pageHtml, "/docs|<p>Body</p>");
+      assert.match(indexHtml, /^\/docs\|/);
+    },
+  );
+});
+
 test("resolveTemplates falls back to built-in index when _templates/index.html is missing", async () => {
   await withVault(
     async (vaultRoot) => {
