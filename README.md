@@ -139,8 +139,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: <owner>/md-ssg-action@v1
+      - uses: actions/checkout@v6
+      - uses: <owner>/md-ssg-action@v0.1.0
         with:
           markdown-location: "."
           site-location: "_site"

@@ -4,7 +4,7 @@
   "description": "Converts repository of markdown files to a static web page",
   "main": "index.js",
   "scripts": {
-    "build": "ncc build index.js -o dist",
+    "build": "ncc build index.js -o dist && cp -r src/defaults dist/defaults",
     "test": "node --test 'test/**/*.test.js'"
   },
   "keywords": [],
