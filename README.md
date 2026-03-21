@@ -83,6 +83,9 @@ Optional companion files:
 
 - `_templates/index.html`
 - `_templates/style.css`
+- `_templates/favicon.svg`
+
+MD-SSG writes a default `favicon.svg` to the site root. Add `_templates/favicon.svg` to override it.
 
 Placeholders:
 
@@ -91,6 +94,7 @@ Placeholders:
 | `{{content}}` | `page.html` | Rendered markdown HTML |
 | `{{title}}` | `page.html`, `index.html` | Page title or site title |
 | `{{basePath}}` | `page.html`, `index.html` | URL prefix |
+| `{{faviconHref}}` | `page.html`, `index.html` | Full favicon URL (`{{basePath}}/favicon.svg`) |
 | `{{siteTitle}}` | `page.html` | Site title from config |
 | `{{pages}}` | `index.html` | Pre-rendered page list HTML |
 

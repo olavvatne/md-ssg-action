@@ -3,7 +3,13 @@ import assert from "node:assert/strict";
 import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { defaultStylesheet, renderIndex, renderPage, resolveTemplates } from "../src/templates.js";
+import {
+  defaultFavicon,
+  defaultStylesheet,
+  renderIndex,
+  renderPage,
+  resolveTemplates,
+} from "../src/templates.js";
 
 async function withVault(setup, fn) {
   const vaultRoot = await mkdtemp(path.join(os.tmpdir(), "md-ssg-templates-"));
@@ -26,6 +32,7 @@ test("renderPage returns complete HTML with title, nav, content, and stylesheet"
 
   assert.match(html, /<!doctype html>/i);
   assert.match(html, /<title>Pasta - My Site<\/title>/);
+  assert.match(html, /<link rel="icon" type="image\/svg\+xml" href="\/base\/favicon\.svg">/);
   assert.match(html, /<link rel="stylesheet" href="\/base\/style\.css">/);
   assert.match(html, /<nav><a href="\/base\/?">Home<\/a><\/nav>/);
   assert.match(html, /<article>[\s\S]*<h1>Pasta<\/h1><p>Great\.<\/p>[\s\S]*<\/article>/);
@@ -95,7 +102,19 @@ test("basePath is applied to internal links", () => {
 
   assert.match(pageHtml, /href="\/docs\/style\.css"/);
   assert.match(pageHtml, /href="\/docs\/?"/);
+  assert.match(pageHtml, /href="\/docs\/favicon\.svg"/);
+  assert.match(indexHtml, /href="\/docs\/favicon\.svg"/);
   assert.match(indexHtml, /href="\/docs\/style\.css"/);
+});
+
+test("defaultFavicon returns svg content", () => {
+  const icon = defaultFavicon();
+
+  assert.match(icon, /^<svg[\s\S]*<\/svg>\s*$/);
+  assert.match(icon, /Book_Open/);
+  assert.match(icon, /prefers-color-scheme: dark/);
+  assert.match(icon, /#6b7280/);
+  assert.match(icon, /#d1d5db/);
 });
 
 test("resolveTemplates uses built-in templates when no _templates/page.html exists", async () => {
@@ -112,6 +131,7 @@ test("resolveTemplates uses built-in templates when no _templates/page.html exis
 
       assert.match(html, /<title>One - Site<\/title>/);
       assert.match(templates.stylesheet(), /prefers-color-scheme: dark/);
+      assert.match(templates.favicon(), /<svg/);
     },
   );
 });
@@ -199,6 +219,33 @@ test("resolveTemplates normalizes basePath in custom templates", async () => {
   );
 });
 
+test("resolveTemplates replaces faviconHref in custom templates", async () => {
+  await withVault(
+    async (vaultRoot) => {
+      await mkdir(path.join(vaultRoot, "_templates"), { recursive: true });
+      await writeFile(path.join(vaultRoot, "_templates", "page.html"), "{{faviconHref}}", "utf8");
+      await writeFile(path.join(vaultRoot, "_templates", "index.html"), "{{faviconHref}}", "utf8");
+    },
+    async (vaultRoot) => {
+      const templates = await resolveTemplates(vaultRoot);
+      const pageHtml = templates.renderPage({
+        title: "Page",
+        content: "<p>Body</p>",
+        basePath: "/docs/",
+        siteTitle: "Site",
+      });
+      const indexHtml = templates.renderIndex({
+        title: "Docs",
+        basePath: "/docs/",
+        pages: [],
+      });
+
+      assert.equal(pageHtml, "/docs/favicon.svg");
+      assert.equal(indexHtml, "/docs/favicon.svg");
+    },
+  );
+});
+
 test("resolveTemplates falls back to built-in index when _templates/index.html is missing", async () => {
   await withVault(
     async (vaultRoot) => {
@@ -252,6 +299,7 @@ test("resolveTemplates uses all custom templates when page, index, and style are
         "body { color: red; }",
         "utf8",
       );
+      await writeFile(path.join(vaultRoot, "_templates", "favicon.svg"), "<svg>v</svg>", "utf8");
     },
     async (vaultRoot) => {
       const templates = await resolveTemplates(vaultRoot);
@@ -272,6 +320,7 @@ test("resolveTemplates uses all custom templates when page, index, and style are
       assert.match(indexHtml, /<section>Docs \/docs/);
       assert.match(indexHtml, /One/);
       assert.equal(templates.stylesheet(), "body { color: red; }");
+      assert.equal(templates.favicon(), "<svg>v</svg>");
     },
   );
 });

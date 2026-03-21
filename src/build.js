@@ -144,6 +144,7 @@ export async function build(opts, deps) {
   }
 
   await writeFile(path.join(outputDir, "style.css"), templates.stylesheet(), "utf8");
+  await writeFile(path.join(outputDir, "favicon.svg"), templates.favicon(), "utf8");
 
   core.info(`Published ${indexPages.length} pages`);
   core.info(`Copied ${images.length} images`);
