@@ -1,25 +1,13 @@
-import { access, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { fileExists, normalizePath } from "./utils.js";
 
 const MARKDOWN_IMAGE_REGEX = /!\[([^\]]*)\]\(([^)]+)\)/g;
 const OBSIDIAN_IMAGE_REGEX = /!\[\[([^\]|]+(?:\.(png|jpg|jpeg|gif|svg|webp|avif|bmp|ico)))\]\]/gi;
 const EXTERNAL_URL_REGEX = /^[a-z][a-z\d+.-]*:\/\//i;
 
-function normalizePath(filePath) {
-  return filePath.replaceAll("\\", "/");
-}
-
 function sanitizeReference(rawPath) {
   return rawPath.split(/[?#]/, 1)[0].trim();
-}
-
-async function exists(filePath) {
-  try {
-    await access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 function resolveCandidates(vaultRoot, markdownFile, referencePath) {
@@ -76,7 +64,7 @@ export async function extractImages(vaultRoot, files, deps) {
       let resolvedPath;
 
       for (const candidate of candidates) {
-        if (await exists(candidate)) {
+        if (await fileExists(candidate)) {
           resolvedPath = candidate;
           break;
         }

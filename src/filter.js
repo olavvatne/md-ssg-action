@@ -1,10 +1,7 @@
 import { glob } from "node:fs/promises";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-
-function normalizePath(filePath) {
-  return filePath.replaceAll("\\", "/");
-}
+import { normalizePath } from "./utils.js";
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

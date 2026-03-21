@@ -1,15 +1,7 @@
 import { visit } from "unist-util-visit";
+import { escapeHtml } from "./utils.js";
 
 const WIKILINK_REGEX = /(?<!\[)\[\[([^\[\]]+?)\]\](?!\])/g;
-
-function escapeHtml(value) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
 
 function parseWikiLink(content) {
   const [rawTarget, ...displayParts] = content.split("|");

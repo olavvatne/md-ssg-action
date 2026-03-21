@@ -2,21 +2,10 @@ import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createProcessor, renderFile } from "./render.js";
 import { resolveTemplates } from "./templates.js";
-
-function normalizePath(filePath) {
-  return filePath.replaceAll("\\", "/");
-}
+import { normalizeBasePath, normalizePath } from "./utils.js";
 
 function stripMarkdownExtension(filePath) {
   return filePath.replace(/\.md$/i, "");
-}
-
-function normalizeBasePath(basePath) {
-  if (!basePath || basePath === "/") {
-    return "";
-  }
-
-  return basePath.endsWith("/") ? basePath.slice(0, -1) : basePath;
 }
 
 function outputRelativeToUrl(basePath, outputRelative) {

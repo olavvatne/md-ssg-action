@@ -1,10 +1,7 @@
 import { copyFile, mkdir, mkdtemp } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-
-function normalizePath(filePath) {
-  return filePath.replaceAll("\\", "/");
-}
+import { normalizePath } from "./utils.js";
 
 function getStaticPrefix(pattern) {
   const normalizedPattern = normalizePath(pattern);
